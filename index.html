@@ -1,143 +1,124 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Copa Phantom</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
       background-color: #000;
       color: #fff;
-    }
-    header {
-      background-color: #111;
+      font-family: Arial, sans-serif;
+      margin: 0;
       padding: 20px;
+    }
+
+    h1 {
       text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      text-transform: uppercase;
-      border-bottom: 2px solid white;
+      font-size: 3em;
+      margin-bottom: 0;
     }
-    header small {
-      display: block;
-      font-size: 0.6em;
-      margin-top: 8px;
-      text-transform: none;
-    }
-    table {
-      width: 90%;
-      margin: 40px auto;
-      border-collapse: collapse;
-      background-color: #222;
-    }
-    th, td {
-      padding: 15px;
+
+    h2 {
       text-align: center;
-      border: 1px solid #555;
-    }
-    th {
-      background-color: #333;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    tr:nth-child(even) {
-      background-color: #1a1a1a;
-    }
-    tr:hover {
-      background-color: #444;
-    }
-    .medalha {
       font-size: 1.2em;
+      margin-top: 5px;
+      color: #aaa;
     }
-    .ponto-verde {
-      color: #00ff00;
-      font-weight: bold;
-    }
-    .ponto-vermelho {
-      color: #ff3333;
-      font-weight: bold;
-    }
-    .descricao {
-      text-align: center;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 20px;
-      font-size: 1em;
-      color: #ccc;
     }
-    .info-jogos {
-      width: 90%;
-      margin: 30px auto;
-      background-color: #111;
-      padding: 20px;
-      border: 1px solid #333;
-      color: #eee;
-      font-size: 1em;
-      line-height: 1.6;
+
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .green {
+      color: #00ff00;
+    }
+
+    .red {
+      color: #ff4444;
+    }
+
+    .medalha::before {
+      content: "🥇";
+    }
+
+    .silver::before {
+      content: "🥈";
+    }
+
+    .bronze::before {
+      content: "🥉";
+    }
+
+    .info {
+      margin-top: 30px;
+      font-size: 1.1em;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <header>
-    Copa Phantom
-    <small>COPA PHANTOM DE VÔLEI - 1ª EDIÇÃO – 2025</small>
-  </header>
+  <h1>Copa Phantom</h1>
+  <h2>COPA PHANTOM DE VÔLEI - 1ª EDIÇÃO – 2025</h2>
 
-  <table>
+  <h3 style="text-align:center; margin-top: 40px;">GRUPO A</h3>
+  <table id="tabela">
     <thead>
       <tr>
-        <th>Posição</th>
         <th>Time</th>
-        <th>Jogos</th>
-        <th>Vitórias</th>
-        <th>Derrotas</th>
         <th>Pontos</th>
       </tr>
     </thead>
-    <tbody id="tabela-classificacao">
-      <tr>
-        <td>🥇</td>
-        <td>Time A</td>
-        <td>5</td>
-        <td>4</td>
-        <td>1</td>
-        <td class="ponto-verde">12</td>
-      </tr>
-      <tr>
-        <td>🥈</td>
-        <td>Time B</td>
-        <td>5</td>
-        <td>3</td>
-        <td>2</td>
-        <td class="ponto-verde">9</td>
-      </tr>
-      <tr>
-        <td>🥉</td>
-        <td>Time C</td>
-        <td>5</td>
-        <td>2</td>
-        <td>3</td>
-        <td class="ponto-verde">6</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Time D</td>
-        <td>5</td>
-        <td>0</td>
-        <td>5</td>
-        <td class="ponto-vermelho">0</td>
-      </tr>
-    </tbody>
+    <tbody></tbody>
   </table>
 
-  <div class="descricao">Fase de Grupos - Grupo A - Dia 01</div>
-
-  <div class="info-jogos">
-    <strong>DATAS, HORÁRIOS E LOCAL</strong><br />
-    Datas: 03, 17 e 24 de Agosto de 2025 (domingos)<br />
-    Horário: Das 09h00 às 16h00<br />
-    Local: Fundação Julita – Quadras 3 e 4<br />
+  <p class="info">Fase de Grupos - Dia 01</p>
+  <p class="info">
+    <strong>DATAS, HORÁRIOS E LOCAL</strong><br>
+    Datas: 03, 17 e 24 de Agosto de 2025 (domingos)<br>
+    Horário: Das 09h00 às 16h00<br>
+    Local: Fundação Julita – Quadras 3 e 4.<br>
     Endereço: R. Nova do Tuparoquera, 249 - Jardim São Luís, São Paulo - SP, 05820-200
-  </div>
+  </p>
+
+  <script>
+    async function carregarTabela() {
+      const sheetId = https: '//docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pubhtml';
+      const url = `https://opensheet.elk.sh/${sheetId}/1`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const tabela = document.querySelector('#tabela tbody');
+      tabela.innerHTML = '';
+
+      data.forEach((linha, i) => {
+        const tr = document.createElement('tr');
+
+        const tdTime = document.createElement('td');
+        if (i === 0) tdTime.classList.add('medalha');
+        else if (i === 1) tdTime.classList.add('silver');
+        else if (i === 2) tdTime.classList.add('bronze');
+        tdTime.textContent = linha.Time;
+        tr.appendChild(tdTime);
+
+        const tdPontos = document.createElement('td');
+        tdPontos.textContent = linha.Pontos;
+        tdPontos.classList.add(Number(linha.Pontos) > 1 ? 'green' : 'red');
+        tr.appendChild(tdPontos);
+
+        tabela.appendChild(tr);
+      });
+    }
+
+    carregarTabela();
+  </script>
 </body>
 </html>
