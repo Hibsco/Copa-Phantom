@@ -3,122 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <title>Copa Phantom</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
+      padding: 30px;
+      background-color: #f4f4f4;
     }
-
-    h1 {
-      text-align: center;
-      font-size: 3em;
-      margin-bottom: 0;
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 1.2em;
-      margin-top: 5px;
-      color: #aaa;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      background-color: #fff;
     }
-
     th, td {
-      border: 1px solid #444;
-      padding: 10px;
-      text-align: center;
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
     }
-
-    .green {
-      color: #00ff00;
-    }
-
-    .red {
-      color: #ff4444;
-    }
-
-    .medalha::before {
-      content: "🥇";
-    }
-
-    .silver::before {
-      content: "🥈";
-    }
-
-    .bronze::before {
-      content: "🥉";
-    }
-
-    .info {
-      margin-top: 30px;
-      font-size: 1.1em;
-      color: #ccc;
+    th {
+      background-color: #444;
+      color: white;
     }
   </style>
-</head>
-<body>
-  <h1>Copa Phantom</h1>
-  <h2>COPA PHANTOM DE VÔLEI - 1ª EDIÇÃO – 2025</h2>
-
-  <h3 style="text-align:center; margin-top: 40px;">GRUPO A</h3>
-  <table id="tabela">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Pontos</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <p class="info">Fase de Grupos - Dia 01</p>
-  <p class="info">
-    <strong>DATAS, HORÁRIOS E LOCAL</strong><br>
-    Datas: 03, 17 e 24 de Agosto de 2025 (domingos)<br>
-    Horário: Das 09h00 às 16h00<br>
-    Local: Fundação Julita – Quadras 3 e 4.<br>
-    Endereço: R. Nova do Tuparoquera, 249 - Jardim São Luís, São Paulo - SP, 05820-200
-  </p>
-
   <script>
-    async function carregarTabela() {
-      const sheetId = https: '//docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pubhtml';
-      const url = `https://opensheet.elk.sh/${sheetId}/1`;
+    google.charts.load('current', { packages: ['table'] });
+    google.charts.setOnLoadCallback(drawTable);
 
-      const res = await fetch(url);
-      const data = await res.json();
+    function drawTable() {
+      const queryString = encodeURIComponent("SELECT *");
+      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/gviz/tq?sheet=Sheet1&range=A1&headers=1&tq=' + queryString;
 
-      const tabela = document.querySelector('#tabela tbody');
-      tabela.innerHTML = '';
+      const query = new google.visualization.Query(url);
+      query.send(function(response) {
+        if (response.isError()) {
+          document.body.innerHTML = 'Erro ao carregar dados: ' + response.getMessage() + ' ' + response.getDetailedMessage();
+          return;
+        }
 
-      data.forEach((linha, i) => {
-        const tr = document.createElement('tr');
-
-        const tdTime = document.createElement('td');
-        if (i === 0) tdTime.classList.add('medalha');
-        else if (i === 1) tdTime.classList.add('silver');
-        else if (i === 2) tdTime.classList.add('bronze');
-        tdTime.textContent = linha.Time;
-        tr.appendChild(tdTime);
-
-        const tdPontos = document.createElement('td');
-        tdPontos.textContent = linha.Pontos;
-        tdPontos.classList.add(Number(linha.Pontos) > 1 ? 'green' : 'red');
-        tr.appendChild(tdPontos);
-
-        tabela.appendChild(tr);
+        const data = response.getDataTable();
+        const table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, { showRowNumber: false, width: '100%', height: '100%' });
       });
     }
-
-    carregarTabela();
   </script>
+</head>
+<body>
+  <h1>Tabela da Copa Phantom</h1>
+  <div id="table_div"></div>
 </body>
 </html>
