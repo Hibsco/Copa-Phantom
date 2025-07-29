@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>COPA PHANTOM</title>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -108,45 +108,38 @@
   </div>
 
   <script>
-    google.charts.load('current', { packages: ['corechart'] });
-    google.charts.setOnLoadCallback(carregarTabela);
+    document.addEventListener('DOMContentLoaded', () => {
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pub?output=csv';
 
-    function carregarTabela() {
-      const query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/gviz/tq?sheet=Sheet1&headers=1');
-      query.send(function(response) {
-        if (response.isError()) {
-          document.getElementById('tabela-classificacao').innerHTML = `<tr><td colspan="6">Erro ao carregar dados: ${response.getMessage()}</td></tr>`;
-          return;
+      Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const tabela = document.getElementById('tabela-classificacao');
+          tabela.innerHTML = '';
+
+          results.data.forEach(row => {
+            const pontos = parseInt(row['Pontos'] || 0);
+            const classePonto = pontos === 0 ? 'ponto-vermelho' : 'ponto-verde';
+
+            tabela.innerHTML += `
+              <tr>
+                <td>${row['Classificação'] || ''}</td>
+                <td>${row['Time'] || ''}</td>
+                <td>${row['Jogos'] || ''}</td>
+                <td>${row['Vitórias'] || ''}</td>
+                <td>${row['Derrotas'] || ''}</td>
+                <td class="${classePonto}">${row['Pontos'] || ''}</td>
+              </tr>
+            `;
+          });
+        },
+        error: function(err) {
+          document.getElementById('tabela-classificacao').innerHTML =
+            `<tr><td colspan="6">Erro ao carregar planilha: ${err.message}</td></tr>`;
         }
-
-        const data = response.getDataTable();
-        let html = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pubhtml';
-
-        for (let i = 0; i < data.getNumberOfRows(); i++) {
-          const posicao = data.getValue(i, 0);
-          const time = data.getValue(i, 1);
-          const jogos = data.getValue(i, 2);
-          const vitorias = data.getValue(i, 3);
-          const derrotas = data.getValue(i, 4);
-          const pontos = data.getValue(i, 5);
-
-          const classePonto = pontos === 0 ? 'ponto-vermelho' : 'ponto-verde';
-
-          html += `
-            <tr>
-              <td>${posicao}</td>
-              <td>${time}</td>
-              <td>${jogos}</td>
-              <td>${vitorias}</td>
-              <td>${derrotas}</td>
-              <td class="${classePonto}">${pontos}</td>
-            </tr>
-          `;
-        }
-
-        document.getElementById('tabela-classificacao').innerHTML = html;
       });
-    }
+    });
   </script>
 </body>
 </html>
