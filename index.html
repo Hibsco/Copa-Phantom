@@ -136,3 +136,82 @@
             <th>Derrotas</th>
             <th>Pontos</th>
           </tr>
+        </thead>
+        <tbody id="tabela-grupo-a">
+          <tr><td colspan="6">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tabela-wrapper">
+      <div class="titulo-grupo">Grupo B</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Classificação</th>
+            <th>Time</th>
+            <th>Jogos</th>
+            <th>Vitórias</th>
+            <th>Derrotas</th>
+            <th>Pontos</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-grupo-b">
+          <tr><td colspan="6">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="descricao">Fase de Grupos - Grupo A e Grupo B - Dia 01</div>
+
+  <div class="info-jogos">
+    <strong>DATAS, HORÁRIOS E LOCAL</strong><br />
+    Datas: 03, 17 e 24 de Agosto de 2025 (domingos)<br />
+    Horário: Das 09h00 às 16h00<br />
+    Local: Fundação Julita – Quadras 3 e 4<br />
+    Endereço: R. Nova do Tuparoquera, 249 - Jardim São Luís, São Paulo - SP, 05820-200
+  </div>
+
+  <script>
+    function carregarTabela(url, elementoId) {
+      Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const tabela = document.getElementById(elementoId);
+          tabela.innerHTML = '';
+
+          results.data.forEach(row => {
+            const pontos = parseInt(row['Pontos'] || 0);
+            const classePonto = pontos === 1 ? 'ponto-vermelho' : 'ponto-verde';
+
+            tabela.innerHTML += `
+              <tr>
+                <td>${row['Classificação'] || ''}</td>
+                <td>${row['Time'] || ''}</td>
+                <td>${row['Jogos'] || ''}</td>
+                <td>${row['Vitórias'] || ''}</td>
+                <td>${row['Derrotas'] || ''}</td>
+                <td class="${classePonto}">${row['Pontos'] || ''}</td>
+              </tr>
+            `;
+          });
+        },
+        error: function(err) {
+          document.getElementById(elementoId).innerHTML =
+            `<tr><td colspan="6">Erro ao carregar: ${err.message}</td></tr>`;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlGrupoA = '<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>';
+      const urlGrupoB = '<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pubhtml?gid=115467605&amp;single=true&amp;widget=true&amp;headers=false"></iframe>';
+
+      carregarTabela(urlGrupoA, 'tabela-grupo-a');
+      carregarTabela(urlGrupoB, 'tabela-grupo-b');
+    });
+  </script>
+</body>
+</html>
