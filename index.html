@@ -120,7 +120,7 @@
 
           results.data.forEach(row => {
             const pontos = parseInt(row['Pontos'] || 0);
-            const classePonto = pontos === 0 ? 'ponto-vermelho' : 'ponto-verde';
+            const classePonto = pontos === 1 ? 'ponto-vermelho' : 'ponto-verde';
 
             tabela.innerHTML += `
               <tr>
