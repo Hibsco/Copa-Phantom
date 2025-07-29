@@ -66,12 +66,11 @@
       word-wrap: break-word;
     }
 
-    /* Cabeçalho com fonte menor */
     th {
       background-color: #333;
       font-weight: bold;
       text-transform: uppercase;
-      font-size: 0.50em; /* Fonte menor no cabeçalho */
+      font-size: 0.45em;
     }
 
     tr:nth-child(even) {
@@ -197,7 +196,7 @@
 
               tabela.innerHTML += `
                 <tr>
-                  <td>${row['Classific'] || ''}</td>
+                  <td>${row['Classificação'] || ''}</td>
                   <td>${row['Time'] || ''}</td>
                   <td>${row['Jogos'] || ''}</td>
                   <td>${row['Vitórias'] || ''}</td>
