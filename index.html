@@ -34,40 +34,41 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 30px;
-      margin-top: 40px;
+      gap: 20px;
+      margin-top: 30px;
     }
 
     .tabela-wrapper {
-      flex: 1 1 400px;
-      max-width: 450px;
+      flex: 1 1 300px;
+      max-width: 400px;
     }
 
-    .titulo-grupo {
+    .tabela-wrapper h2 {
       text-align: center;
       font-size: 1.2em;
       margin-bottom: 10px;
-      color: #fff;
-      font-weight: bold;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #222;
+      table-layout: fixed;
     }
 
     th, td {
-      padding: 12px;
+      padding: 6px 4px;
       text-align: center;
       border: 1px solid #555;
-      font-size: 0.9em;
+      font-size: 0.75em;
+      word-wrap: break-word;
     }
 
     th {
       background-color: #333;
       font-weight: bold;
       text-transform: uppercase;
+      font-size: 0.7em;
     }
 
     tr:nth-child(even) {
@@ -105,17 +106,6 @@
       font-size: 1em;
       line-height: 1.6;
     }
-
-    @media (max-width: 900px) {
-      .tabelas-container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .tabela-wrapper {
-        max-width: 95%;
-      }
-    }
   </style>
 </head>
 <body>
@@ -126,7 +116,7 @@
 
   <div class="tabelas-container">
     <div class="tabela-wrapper">
-      <div class="titulo-grupo">Grupo A</div>
+      <h2>Grupo A</h2>
       <table>
         <thead>
           <tr>
@@ -139,13 +129,13 @@
           </tr>
         </thead>
         <tbody id="tabela-grupo-a">
-          <tr><td colspan="6">Carregando...</td></tr>
+          <tr><td colspan="6">Carregando dados...</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="tabela-wrapper">
-      <div class="titulo-grupo">Grupo B</div>
+      <h2>Grupo B</h2>
       <table>
         <thead>
           <tr>
@@ -158,7 +148,7 @@
           </tr>
         </thead>
         <tbody id="tabela-grupo-b">
-          <tr><td colspan="6">Carregando...</td></tr>
+          <tr><td colspan="6">Carregando dados...</td></tr>
         </tbody>
       </table>
     </div>
@@ -175,45 +165,43 @@
   </div>
 
   <script>
-    function carregarTabela(url, elementoId) {
-      Papa.parse(url, {
-        download: true,
-        header: true,
-        complete: function(results) {
-          const tabela = document.getElementById(elementoId);
-          tabela.innerHTML = '';
-
-          results.data.forEach(row => {
-            if (!row['Time']) return;
-
-            const pontos = parseInt(row['Pontos'] || 0);
-            const classePonto = pontos === 1 ? 'ponto-vermelho' : 'ponto-verde';
-
-            tabela.innerHTML += `
-              <tr>
-                <td>${row['Classificação'] || ''}</td>
-                <td>${row['Time'] || ''}</td>
-                <td>${row['Jogos'] || ''}</td>
-                <td>${row['Vitórias'] || ''}</td>
-                <td>${row['Derrotas'] || ''}</td>
-                <td class="${classePonto}">${row['Pontos'] || ''}</td>
-              </tr>
-            `;
-          });
-        },
-        error: function(err) {
-          document.getElementById(elementoId).innerHTML =
-            `<tr><td colspan="6">Erro ao carregar: ${err.message}</td></tr>`;
-        }
-      });
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      const urlGrupoA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pub?gid=0&single=true&output=csv';
-      const urlGrupoB = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pub?gid=115467605&single=true&output=csv';
+      const grupoAUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pub?gid=0&single=true&output=csv';
+      const grupoBUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/pub?gid=115467605&single=true&output=csv';
 
-      carregarTabela(urlGrupoA, 'tabela-grupo-a');
-      carregarTabela(urlGrupoB, 'tabela-grupo-b');
+      function carregarTabela(url, idTabela) {
+        Papa.parse(url, {
+          download: true,
+          header: true,
+          complete: function(results) {
+            const tabela = document.getElementById(idTabela);
+            tabela.innerHTML = '';
+
+            results.data.forEach(row => {
+              const pontos = parseInt(row['Pontos'] || 0);
+              const classePonto = pontos === 1 ? 'ponto-vermelho' : 'ponto-verde';
+
+              tabela.innerHTML += `
+                <tr>
+                  <td>${row['Classificação'] || ''}</td>
+                  <td>${row['Time'] || ''}</td>
+                  <td>${row['Jogos'] || ''}</td>
+                  <td>${row['Vitórias'] || ''}</td>
+                  <td>${row['Derrotas'] || ''}</td>
+                  <td class="${classePonto}">${row['Pontos'] || ''}</td>
+                </tr>
+              `;
+            });
+          },
+          error: function(err) {
+            document.getElementById(idTabela).innerHTML =
+              `<tr><td colspan="6">Erro ao carregar: ${err.message}</td></tr>`;
+          }
+        });
+      }
+
+      carregarTabela(grupoAUrl, 'tabela-grupo-a');
+      carregarTabela(grupoBUrl, 'tabela-grupo-b');
     });
   </script>
 </body>
