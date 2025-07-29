@@ -27,11 +27,23 @@
       margin-top: 8px;
       text-transform: none;
     }
-    table {
+    .tabelas-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    .tabela-wrapper {
       width: 90%;
-      margin: 40px auto;
+      max-width: 500px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
       border-collapse: collapse;
       background-color: #222;
+      min-width: 400px;
     }
     th, td {
       padding: 15px;
@@ -73,6 +85,13 @@
       font-size: 1em;
       line-height: 1.6;
     }
+    .titulo-grupo {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #fff;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -81,23 +100,48 @@
     <small>COPA PHANTOM DE VÔLEI - 1ª EDIÇÃO – 2025</small>
   </header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Classificação</th>
-        <th>Time</th>
-        <th>Jogos</th>
-        <th>Vitórias</th>
-        <th>Derrotas</th>
-        <th>Pontos</th>
-      </tr>
-    </thead>
-    <tbody id="tabela-classificacao">
-      <tr><td colspan="6">Carregando dados...</td></tr>
-    </tbody>
-  </table>
+  <!-- Tabelas lado a lado ou embaixo dependendo da tela -->
+  <div class="tabelas-container">
+    <div class="tabela-wrapper">
+      <div class="titulo-grupo">Grupo A</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Classificação</th>
+            <th>Time</th>
+            <th>Jogos</th>
+            <th>Vitórias</th>
+            <th>Derrotas</th>
+            <th>Pontos</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-grupo-a">
+          <tr><td colspan="6">Carregando dados...</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="descricao">Fase de Grupos - Grupo A - Dia 01</div>
+    <div class="tabela-wrapper">
+      <div class="titulo-grupo">Grupo B</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Classificação</th>
+            <th>Time</th>
+            <th>Jogos</th>
+            <th>Vitórias</th>
+            <th>Derrotas</th>
+            <th>Pontos</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-grupo-b">
+          <tr><td colspan="6">Carregando dados...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="descricao">Fase de Grupos - Grupo A e Grupo B - Dia 01</div>
 
   <div class="info-jogos">
     <strong>DATAS, HORÁRIOS E LOCAL</strong><br />
@@ -115,14 +159,17 @@
         download: true,
         header: true,
         complete: function(results) {
-          const tabela = document.getElementById('tabela-classificacao');
-          tabela.innerHTML = '';
+          const grupoA = document.getElementById('tabela-grupo-a');
+          const grupoB = document.getElementById('tabela-grupo-b');
+          grupoA.innerHTML = '';
+          grupoB.innerHTML = '';
 
           results.data.forEach(row => {
+            const grupo = (row['Grupo'] || '').trim().toUpperCase();
             const pontos = parseInt(row['Pontos'] || 0);
             const classePonto = pontos === 1 ? 'ponto-vermelho' : 'ponto-verde';
 
-            tabela.innerHTML += `
+            const linha = `
               <tr>
                 <td>${row['Classificação'] || ''}</td>
                 <td>${row['Time'] || ''}</td>
@@ -132,10 +179,18 @@
                 <td class="${classePonto}">${row['Pontos'] || ''}</td>
               </tr>
             `;
+
+            if (grupo === 'A') {
+              grupoA.innerHTML += linha;
+            } else if (grupo === 'B') {
+              grupoB.innerHTML += linha;
+            }
           });
         },
         error: function(err) {
-          document.getElementById('tabela-classificacao').innerHTML =
+          document.getElementById('tabela-grupo-a').innerHTML =
+            `<tr><td colspan="6">Erro ao carregar planilha: ${err.message}</td></tr>`;
+          document.getElementById('tabela-grupo-b').innerHTML =
             `<tr><td colspan="6">Erro ao carregar planilha: ${err.message}</td></tr>`;
         }
       });
