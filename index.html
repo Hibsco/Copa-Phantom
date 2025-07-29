@@ -1,54 +1,152 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Copa Phantom</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COPA PHANTOM</title>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      padding: 30px;
-      background-color: #f4f4f4;
+      background-color: #000;
+      color: #fff;
+    }
+    header {
+      background-color: #111;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 2px solid white;
+    }
+    header small {
+      display: block;
+      font-size: 0.6em;
+      margin-top: 8px;
+      text-transform: none;
     }
     table {
-      width: 100%;
+      width: 90%;
+      margin: 40px auto;
       border-collapse: collapse;
-      background-color: #fff;
+      background-color: #222;
     }
     th, td {
-      padding: 12px;
-      border: 1px solid #ccc;
-      text-align: left;
+      padding: 15px;
+      text-align: center;
+      border: 1px solid #555;
     }
     th {
+      background-color: #333;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+    tr:hover {
       background-color: #444;
-      color: white;
+    }
+    .ponto-verde {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    .ponto-vermelho {
+      color: #ff3333;
+      font-weight: bold;
+    }
+    .descricao {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1em;
+      color: #ccc;
+    }
+    .info-jogos {
+      width: 90%;
+      margin: 30px auto;
+      background-color: #111;
+      padding: 20px;
+      border: 1px solid #333;
+      color: #eee;
+      font-size: 1em;
+      line-height: 1.6;
     }
   </style>
+</head>
+<body>
+  <header>
+    Copa Phantom
+    <small>COPA PHANTOM DE VÔLEI - 1ª EDIÇÃO – 2025</small>
+  </header>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Posição</th>
+        <th>Time</th>
+        <th>Jogos</th>
+        <th>Vitórias</th>
+        <th>Derrotas</th>
+        <th>Pontos</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-classificacao">
+      <tr><td colspan="6">Carregando dados...</td></tr>
+    </tbody>
+  </table>
+
+  <div class="descricao">Fase de Grupos - Grupo A - Dia 01</div>
+
+  <div class="info-jogos">
+    <strong>DATAS, HORÁRIOS E LOCAL</strong><br />
+    Datas: 03, 17 e 24 de Agosto de 2025 (domingos)<br />
+    Horário: Das 09h00 às 16h00<br />
+    Local: Fundação Julita – Quadras 3 e 4<br />
+    Endereço: R. Nova do Tuparoquera, 249 - Jardim São Luís, São Paulo - SP, 05820-200
+  </div>
+
   <script>
-    google.charts.load('current', { packages: ['table'] });
-    google.charts.setOnLoadCallback(drawTable);
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(carregarTabela);
 
-    function drawTable() {
-      const queryString = encodeURIComponent("SELECT *");
-      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/gviz/tq?sheet=Sheet1&range=A1&headers=1&tq=' + queryString;
-
-      const query = new google.visualization.Query(url);
+    function carregarTabela() {
+      const query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/e/2PACX-1vRnMzXRvUUw7ttri27LwG5pZDdMH8rzgVR0gYZfVWCybpxSiVnsxrUK68DN_PL7znEz0TTa9ONbG-uF/gviz/tq?sheet=Sheet1&headers=1');
       query.send(function(response) {
         if (response.isError()) {
-          document.body.innerHTML = 'Erro ao carregar dados: ' + response.getMessage() + ' ' + response.getDetailedMessage();
+          document.getElementById('tabela-classificacao').innerHTML = `<tr><td colspan="6">Erro ao carregar dados: ${response.getMessage()}</td></tr>`;
           return;
         }
 
         const data = response.getDataTable();
-        const table = new google.visualization.Table(document.getElementById('table_div'));
-        table.draw(data, { showRowNumber: false, width: '100%', height: '100%' });
+        let html = '';
+
+        for (let i = 0; i < data.getNumberOfRows(); i++) {
+          const posicao = data.getValue(i, 0);
+          const time = data.getValue(i, 1);
+          const jogos = data.getValue(i, 2);
+          const vitorias = data.getValue(i, 3);
+          const derrotas = data.getValue(i, 4);
+          const pontos = data.getValue(i, 5);
+
+          const classePonto = pontos === 0 ? 'ponto-vermelho' : 'ponto-verde';
+
+          html += `
+            <tr>
+              <td>${posicao}</td>
+              <td>${time}</td>
+              <td>${jogos}</td>
+              <td>${vitorias}</td>
+              <td>${derrotas}</td>
+              <td class="${classePonto}">${pontos}</td>
+            </tr>
+          `;
+        }
+
+        document.getElementById('tabela-classificacao').innerHTML = html;
       });
     }
   </script>
-</head>
-<body>
-  <h1>Tabela da Copa Phantom</h1>
-  <div id="table_div"></div>
 </body>
 </html>
