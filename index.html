@@ -122,7 +122,7 @@
 
       linhas.forEach(linha => {
         const dados = linha.split(",");
-        if (dados.length < 6 || !dados[1].trim()) return;
+        if (dados.length < 2 || !dados[1].trim()) return;
         const tr = document.createElement("tr");
         dados.forEach(valor => {
           const td = document.createElement("td");
@@ -138,4 +138,5 @@
   </script>
 </body>
 </html>
+
 
