@@ -27,7 +27,7 @@
     }
 
     .tabela-wrapper {
-      width: 360px; /* TAMANHO PADRÃO FIXO */
+      width: 360px;
       overflow-x: auto;
     }
 
@@ -42,29 +42,17 @@
       border: 1px solid #444;
       padding: 5px;
       text-align: center;
-      font-size: 0.60em; /* <-- ESTE VALOR CONTROLA O TAMANHO DO TEXTO */
+      font-size: 0.60em;
     }
 
     th {
       background-color: #333;
       font-weight: bold;
-      font-size: 0.60em; /* Tamanho ajustado cabeçalho */
+      font-size: 0.60em;
     }
 
     td:last-child {
       font-weight: bold;
-    }
-
-    td:last-child[data-pontos="positivo"] {
-      color: limegreen;
-    }
-
-    td:last-child[data-pontos="negativo"] {
-      color: red;
-    }
-
-    td:last-child[data-pontos="zero"] {
-      color: white;
     }
 
     .info {
@@ -105,6 +93,7 @@
           <tr>
             <th>CLASSIFICAÇÃO</th>
             <th>TIME</th>
+            
           </tr>
         </thead>
         <tbody></tbody>
@@ -112,7 +101,7 @@
     </div>
   </div>
 
-  <p>Fase de Grupos - Grupo A e Grupo B </p>
+  <p>Fase de Grupos - Grupo A e Grupo B - Dia 01</p>
 
   <div class="info">
     <h3>DATAS, HORÁRIOS E LOCAL</h3>
@@ -133,15 +122,11 @@
 
       linhas.forEach(linha => {
         const dados = linha.split(",");
-        if (dados.length < 6 || !dados[1].trim()) return; // ignora linhas vazias
+        if (dados.length < 6 || !dados[1].trim()) return;
         const tr = document.createElement("tr");
-        dados.forEach((valor, i) => {
+        dados.forEach(valor => {
           const td = document.createElement("td");
           td.textContent = valor;
-
-            );
-          }
-
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -153,5 +138,3 @@
   </script>
 </body>
 </html>
-
-
